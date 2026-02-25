@@ -9,8 +9,8 @@ export default function Home() {
             Cameron Moeller
           </h1>
           <p className="text-lg text-foreground/70 leading-relaxed max-w-prose">
-            Software engineer. I build things and occasionally take photos. 
-            This is where I write about what I&apos;m working on / thinking about.
+            Software engineer. 
+            This is where I share things I'm working on, things I'm thinking about, and photos I've taken.
           </p>
         </div>
 
