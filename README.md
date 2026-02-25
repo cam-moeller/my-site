@@ -115,3 +115,93 @@ Set `published: false` in the frontmatter. `getAllPosts()` filters these out, so
 | `description` | string | yes | Shown in the card and `<meta>` description |
 | `tags` | string[] | yes | Rendered as pills; use `[]` for none |
 | `published` | boolean | yes | Set to `false` to hide the post |
+
+---
+
+## Projects — How It Works
+
+### Architecture Overview
+
+```
+src/content/projects/*.mdx           ← your project files (source of truth)
+         ↓
+src/lib/projects.ts                  ← reads and parses MDX files
+         ↓
+src/app/projects/page.tsx            ← /projects  (project list)
+src/app/projects/[slug]/page.tsx     ← /projects/my-project  (individual project)
+```
+
+Like the blog, the projects section is **fully static** — no database, just MDX files on disk.
+
+---
+
+### Creating a New Project
+
+1. Create a file in `src/content/projects/` named `your-project-slug.mdx`
+   - The filename becomes the URL: `/projects/your-project-slug`
+
+2. Add the frontmatter at the top:
+
+```yaml
+---
+title: "Project Name"
+description: "A short summary shown in the project list."
+tags: ["typescript", "aws"]
+github: "https://github.com/you/repo"   # optional
+url: "https://your-project.com"         # optional
+date: "2026-02-25"
+featured: true
+---
+```
+
+3. Write your project details below the frontmatter using Markdown.
+
+4. Push to main → Vercel auto-deploys and the project appears live.
+
+---
+
+### Frontmatter Fields
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `title` | string | yes | Displayed as the project heading |
+| `description` | string | yes | Shown in the list card and `<meta>` description |
+| `tags` | string[] | yes | Rendered as pills; use `[]` for none |
+| `date` | `"YYYY-MM-DD"` | yes | Used for sorting |
+| `featured` | boolean | yes | Set to `true` to highlight the project |
+| `github` | string (URL) | no | Link to the source repository |
+| `url` | string (URL) | no | Link to the live project |
+
+---
+
+## Photography — How It Works
+
+### Architecture Overview
+
+```
+public/images/photography/*.{jpg,jpeg,png,webp,avif}  ← your image files
+         ↓
+src/app/photography/page.tsx                          ← /photography (masonry grid)
+```
+
+The photography page reads the `public/images/photography/` directory at **build time** and renders a masonry grid. There are no MDX files or frontmatter — just drop image files in the folder.
+
+---
+
+### Adding Photos
+
+1. Place image files in `public/images/photography/`
+   - Supported formats: `.jpg`, `.jpeg`, `.png`, `.webp`, `.avif`
+   - Filenames don't affect the URL — they're only used as React keys internally
+
+2. Push to main → Vercel rebuilds and the images appear in the grid at `/photography`
+
+If the directory is empty (or doesn't exist), the page shows a "No photos yet" placeholder automatically.
+
+---
+
+### Tips
+
+- **Order**: images are displayed in the order `fs.readdir` returns them (typically alphabetical). Prefix filenames with a number (e.g. `01-landscape.jpg`) to control display order.
+- **Format**: prefer `.webp` or `.avif` for smaller file sizes and faster load times.
+- **Size**: images are rendered full-width within their column — no fixed dimensions required.
