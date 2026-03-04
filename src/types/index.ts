@@ -17,3 +17,12 @@ export interface Project {
   date: string;
   featured: boolean;
 }
+
+export interface Photodump {
+  slug: string;
+  title: string;
+  date: string;
+  description: string;
+  images: string[];
+  published: boolean;
+}

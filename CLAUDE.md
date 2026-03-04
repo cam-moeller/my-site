@@ -23,8 +23,14 @@ my-site/
 │   │   ├── blog/
 │   │   │   ├── page.tsx      # Blog index (lists all published posts)
 │   │   │   └── [slug]/page.tsx   # Individual post (MDX + generateStaticParams)
-│   │   ├── projects/         # NOT YET CREATED (Phase 3)
-│   │   └── photography/      # NOT YET CREATED (Phase 4)
+│   │   ├── projects/
+│   │   │   ├── page.tsx      # Projects index (lists all projects)
+│   │   │   └── [slug]/page.tsx   # Individual project (MDX + generateStaticParams)
+│   │   ├── photography/
+│   │   │   ├── page.tsx      # Photography index (lists photodumps)
+│   │   │   └── [slug]/page.tsx   # Individual photodump (MDX + image grid)
+│   │   └── feed.xml/
+│   │       └── route.ts      # RSS 2.0 feed (all posts, projects, photodumps)
 │   ├── components/
 │   │   ├── layout/
 │   │   │   ├── Nav.tsx       # Sticky nav with links + ThemeToggle
@@ -36,11 +42,18 @@ my-site/
 │   ├── content/
 │   │   ├── blog/
 │   │   │   └── hello-world.mdx  # Sample post
-│   │   └── projects/         # NOT YET CREATED (Phase 3)
+│   │   ├── projects/
+│   │   │   ├── personal-site.mdx
+│   │   │   └── sample-project.mdx
+│   │   └── photodumps/
+│   │       └── sample-photodump.mdx
 │   ├── lib/
-│   │   └── mdx.ts            # getAllPosts() + getPost(slug) utilities
+│   │   ├── mdx.ts            # getAllPosts() + getPost(slug) utilities
+│   │   ├── projects.ts       # getAllProjects() + getProject(slug) utilities
+│   │   ├── photodumps.ts     # getAllPhotodumps() + getPhotodump(slug) utilities
+│   │   └── rss.ts            # generateRssFeed(items, siteUrl) → RSS 2.0 XML string
 │   └── types/
-│       └── index.ts          # BlogPost and Project interfaces
+│       └── index.ts          # BlogPost, Project, and Photodump interfaces
 ├── public/
 │   └── images/
 └── [config files: tsconfig.json, next.config.ts, postcss.config.mjs, eslint.config.mjs]
@@ -92,6 +105,17 @@ featured: true
 ---
 ```
 
+### Photodumps (/content/photodumps/*.mdx)
+```yaml
+---
+title: "Photodump Title"
+date: "YYYY-MM-DD"
+description: "Short description for previews and RSS"
+images: ["filename1.jpg", "filename2.jpg"]   # filenames in /public/images/photography/
+published: true
+---
+```
+
 ## Current Status
 - [x] Phase 1: Foundation — **Complete**
   - [x] Next.js 16 + React 19 + React Compiler setup
@@ -105,14 +129,21 @@ featured: true
   - [x] Individual post page with generateStaticParams + generateMetadata
   - [x] BlogCard component
   - [x] Sample post (hello-world.mdx)
-- [ ] Phase 3: Projects page
-  - Create src/content/projects/ with sample .mdx files
-  - Create src/lib/projects.ts (or extend mdx.ts) for getAllProjects()
-  - Create src/app/projects/page.tsx
-- [ ] Phase 4: Photography gallery
-  - Images in /public/images/photography
-  - Create src/app/photography/page.tsx (grid layout)
-- [ ] Phase 5: Polish
+- [x] Phase 3: Projects page — **Complete**
+  - [x] src/content/projects/ with sample .mdx files
+  - [x] src/lib/projects.ts with getAllProjects() + getProject(slug)
+  - [x] src/app/projects/page.tsx (index) + src/app/projects/[slug]/page.tsx
+- [x] Phase 4: Photography gallery — **Complete**
+  - [x] src/content/photodumps/ MDX content type with frontmatter (title, date, description, images, published)
+  - [x] src/lib/photodumps.ts with getAllPhotodumps() + getPhotodump(slug)
+  - [x] src/app/photography/page.tsx (lists photodumps, empty state)
+  - [x] src/app/photography/[slug]/page.tsx (individual photodump with image grid)
+  - [ ] Add photos to /public/images/photography (currently empty)
+- [x] Phase 5: RSS Feed — **Complete**
+  - [x] src/lib/rss.ts — generateRssFeed() returns RSS 2.0 XML
+  - [x] src/app/feed.xml/route.ts — GET handler aggregates all content types
+  - [x] Set NEXT_PUBLIC_SITE_URL env var in Vercel (fallback: https://localhost:3000)
+- [ ] Phase 6: Polish
   - System dark mode preference detection on load
   - SEO: open graph images, sitemap, robots.txt
   - Animations/transitions
